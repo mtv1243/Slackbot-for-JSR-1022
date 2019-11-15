@@ -1,26 +1,70 @@
+var WebClient;
+
+WebClient = require("@slack/client").WebClient;
+
 var squirrels;
 squirrels = ["http://img.skitch.com/20100714-d6q52xajfh4cimxr3888yb77ru.jpg", "https://img.skitch.com/20111026-r2wsngtu4jftwxmsytdke6arwd.png", "http://cl.ly/1i0s1r3t2s2G3P1N3t3M/Screen_Shot_2011-10-27_at_9.36.45_AM.png", "http://shipitsquirrel.github.com/images/squirrel.png"];
 
 module.exports = function(robot) {
   /* Basic example of respond / send. If the user enters hi or hello the bot responds "Howdy!" */
+  var web;
+  web = new WebClient(robot.adapter.options.token);
+
+  //slack API test
+  robot.hear(/api test/i, function(res) {
+  return web.api.test().then(function() {
+    return res.send("Your connection to the Slack API is working!");
+  })["catch"](function(error) {
+    return res.send("Your connection to the Slack API failed :(");
+  });
+});
+
 /*
 ______________  Passive hearing
 */
   robot.hear(/badger/i, function(res) {
-    return res.send("Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS");
+    res.send("Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS");
   });
 
   robot.hear(/I like pie/i, function(res) {
     return res.emote("makes a freshly baked pie");
   });
 
-  robot.hear(/squirrel me/i, function(res) {
-    return res.send(res.random(squirrels));
+//listen to what the user wants to cook
+  robot.hear(/let's cook (.*)/i, function(res) {
+    let foodToCook = res.match[1];
+    console.log(res);
+    if(foodToCook === "steak") {
+      return res.send("Medium rare please!");
+    } else if(foodToCook === "pie") {
+      return res.send("Peach cobbler is the best");
+    } else {
+      return res.send("I'm not hungry for that.");
+    }
   });
+
 
   /*
 ______________  Responses
   */
+
+//_________________interact with google maps API to search for a location
+  // robot.respond(/where were you born/i, function(res) {
+  //   let block = {
+  //       "type": "section",
+  //       "text": {
+  //         "type": "mrkdwn",
+  //         "text": "A message *with some bold text* and _some italicized text_."
+  //       }
+  //     }
+  //
+  //   return res.send(block);
+  // });
+
+  //return results of thispersondoesnotexist.com
+  robot.respond(/generate a friend for me/i, function(res) {
+    return res.reply("www.thispersondoesnotexist.com");
+  });
 
   robot.respond(/hi|hello/i, function(msg) {
     return msg.send("Hello Dave.");
@@ -30,11 +74,76 @@ ______________  Responses
     return res.reply("I'm afraid I can't let you do that.");
   });
 
+
+  robot.respond(/math quiz: (.*) (.*) (.*) (.*)/i, function(res) {
+    let operation = res.match[1];
+    let num1 = Number(res.match[2]);
+    let num2 = Number(res.match[4]);
+    let sum;
+
+    switch (operation) {
+      case "add":
+        sum = num1 + num2;
+        break;
+      case "subtract":
+        sum = num1 - num2;
+        break;
+      case "multiply":
+        sum = num1 * num2;
+        break;
+      case "divide":
+        sum = num1 / num2;
+        break;
+      default:
+        sum = "illogical, Dave."
+    }
+
+    return res.send("The answer is " + sum + ".");
+  });
+
 //_____________ Replies (@)
 
-robot.respond(/how do i look/i, function(res) {
-    return res.reply("I am programmed to provide emotional support in this situation. You look great!");
+//I think this isn't working because the object I'm trying to access
+//is only created when the message is sent, not before.
+//that's why it will console.log, but not store in a variable
+  // robot.respond(/what is my email address?/i, function(res) {
+  //   let realName = res.envelope.user;
+  //   return res.send(console.log(realName));
+  // });
+
+  robot.hear(/email test/i, function(res) {
+  let email = res.message.user.User.email_address;
+  return res.send("users email address is " + email);
 });
+
+//_____________keep track of how many times someone has been thanked
+
+  var thank_scores;
+  thank_scores = {};
+  robot.hear(/thanks/i, function(res) {
+    var i, id, len, mention, response_text, user_mentions;
+    user_mentions = (function() {
+      var i, len, ref, results;
+      ref = res.message.mentions;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        mention = ref[i];
+        if (mention.type === "user") {
+          results.push(mention);
+        }
+      }
+      return results;
+    })();
+    if (user_mentions.length > 0) {
+      response_text = "";
+      for (i = 0, len = user_mentions.length; i < len; i++) {
+        id = user_mentions[i].id;
+        thank_scores[id] = thank_scores[id] != null ? thank_scores[id] + 1 : 1;
+        response_text += "<@" + id + "> has been thanked " + thank_scores[id] + " times!\n";
+      }
+      return res.send(response_text);
+    }
+  });
 
 // close the module.exports
 };
