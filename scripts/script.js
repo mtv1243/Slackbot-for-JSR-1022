@@ -5,6 +5,11 @@ WebClient = require("@slack/client").WebClient;
 var squirrels;
 squirrels = ["http://img.skitch.com/20100714-d6q52xajfh4cimxr3888yb77ru.jpg", "https://img.skitch.com/20111026-r2wsngtu4jftwxmsytdke6arwd.png", "http://cl.ly/1i0s1r3t2s2G3P1N3t3M/Screen_Shot_2011-10-27_at_9.36.45_AM.png", "http://shipitsquirrel.github.com/images/squirrel.png"];
 
+let classObj = {
+  greg: "UPLA6S8GN",
+  myles: "'UP388S9DZ"
+};
+
 module.exports = function(robot) {
   /* Basic example of respond / send. If the user enters hi or hello the bot responds "Howdy!" */
   var web;
@@ -48,18 +53,11 @@ ______________  Passive hearing
 ______________  Responses
   */
 
-//_________________interact with google maps API to search for a location
-  // robot.respond(/where were you born/i, function(res) {
-  //   let block = {
-  //       "type": "section",
-  //       "text": {
-  //         "type": "mrkdwn",
-  //         "text": "A message *with some bold text* and _some italicized text_."
-  //       }
-  //     }
-  //
-  //   return res.send(block);
-  // });
+  robot.respond(/summon (.*)/i, function(res) {
+    let userName = res.match[1];
+    let userId = classObj.userName;
+    
+  });
 
   //return results of thispersondoesnotexist.com
   robot.respond(/generate a friend for me/i, function(res) {
@@ -103,18 +101,16 @@ ______________  Responses
 
 //_____________ Replies (@)
 
-//I think this isn't working because the object I'm trying to access
-//is only created when the message is sent, not before.
-//that's why it will console.log, but not store in a variable
-  // robot.respond(/what is my email address?/i, function(res) {
-  //   let realName = res.envelope.user;
-  //   return res.send(console.log(realName));
-  // });
-
-  robot.hear(/email test/i, function(res) {
-  let email = res.message.user.User.email_address;
-  return res.send("users email address is " + email);
+//robot will return the user's email address
+  robot.hear(/what is my email/i, function(res) {
+  let email = res.envelope.user.email_address;
+  return res.send("Your email address is " + email);
 });
+
+// console.log res in case you need it
+// robot.hear(/email test/i, function(res) {
+// return res.send(console.log(res.envelope.user.email_address));
+// });
 
 //_____________keep track of how many times someone has been thanked
 
