@@ -5,9 +5,31 @@ WebClient = require("@slack/client").WebClient;
 var squirrels;
 squirrels = ["http://img.skitch.com/20100714-d6q52xajfh4cimxr3888yb77ru.jpg", "https://img.skitch.com/20111026-r2wsngtu4jftwxmsytdke6arwd.png", "http://cl.ly/1i0s1r3t2s2G3P1N3t3M/Screen_Shot_2011-10-27_at_9.36.45_AM.png", "http://shipitsquirrel.github.com/images/squirrel.png"];
 
+let iceBreakers = [
+  'A soldier who wants to be declared insane to avoid combat is deemed not insane for that very reason and will therefore not be declared insane.',
+  'Inconsistent premises always make an argument valid.',
+  'Observing a green apple increases the likelihood of all ravens being black.',
+  'A male barber shaves all and only those men who do not shave themselves. Does he shave himself?',
+  'The thesis that there are some things which are unnameable conflicts with the notion that something is named by calling it unnameable.',
+  'If a crocodile steals a child and promises its return if the father can correctly guess exactly what the crocodile will do, how should the crocodile respond in the case that the father guesses that the child will not be returned?',
+  'What would happen if Pinocchio said "My nose grows now"?',
+  'You could have already experienced your worst day ever and not even know it.',
+  'We moved from the floppy disk to the smartphone in 30 years, but we still use stairs as we made them in 3000BC.',
+  'Honey bees die after they sting, making them the original kamikaze pilots.',
+  'With enough determination, any product is a consumable.'
+]
+
 let classObj = {
-  greg: "UPLA6S8GN",
-  myles: "'UP388S9DZ"
+  greg: "<@UPLA6S8GN>",
+  myles: "<@UP388S9DZ>",
+  riley: '<@UPE8R22MA>',
+  swapnil: '<@UPKBNHS4D>',
+  tamar: '<@UPENDK95E>',
+  tim: '<@UPADT6FT4>',
+  joshua: '<@UNVKDGRQB>',
+  jeff: '<@UP388SL67>',
+  jose: '<@UP89LS3Q9>',
+  rebecca: '<@UPGUHKFTQ>'
 };
 
 module.exports = function(robot) {
@@ -31,10 +53,6 @@ ______________  Passive hearing
     res.send("Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS");
   });
 
-  robot.hear(/I like pie/i, function(res) {
-    return res.emote("makes a freshly baked pie");
-  });
-
 //listen to what the user wants to cook
   robot.hear(/let's cook (.*)/i, function(res) {
     let foodToCook = res.match[1];
@@ -55,8 +73,19 @@ ______________  Responses
 
   robot.respond(/summon (.*)/i, function(res) {
     let userName = res.match[1];
-    let userId = classObj.userName;
-    
+    let userId = classObj[userName];
+    let iceBreakerRand = iceBreakers[Math.floor(Math.random() * iceBreakers.length)];
+    let validSummon = ' has summoned ' + userId + '. Here is a topic to break the ice: ' + iceBreakerRand;
+    let invalidSummon = 'I cannot find anyone with that first name. My mind is going. I can feel it.';
+    let halText;
+    for (userName in classObj) {
+      if (userId) {
+        halText = validSummon;
+      } else {
+        halText = invalidSummon;
+      }
+    }
+    return res.reply(halText);
   });
 
   //return results of thispersondoesnotexist.com
@@ -102,7 +131,7 @@ ______________  Responses
 //_____________ Replies (@)
 
 //robot will return the user's email address
-  robot.hear(/what is my email/i, function(res) {
+  robot.respond(/what is my email/i, function(res) {
   let email = res.envelope.user.email_address;
   return res.send("Your email address is " + email);
 });
