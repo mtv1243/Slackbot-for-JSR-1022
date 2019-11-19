@@ -32,7 +32,16 @@ let classObj = {
   myles: "<@UP388S9DZ>",
 };
 
-
+let jsr1022ChannelsObj = {
+  random: 'CMA7LB945',
+  jsr1022: 'CP5TDS82Z',
+  mylesandhal: 'GQLJK3P2Q',
+  mylesandhal2: 'GQN1FRJMB',
+  codereview: 'GPKQ6BFPF',
+  news: 'GPU6MKH2B',
+  general: 'CMC3DDGDD',
+  hubot: 'CPXL57BFU'
+};
 
 module.exports = function(robot) {
 
@@ -48,18 +57,51 @@ module.exports = function(robot) {
   });
 });
 
-let jsr1022ChannelsObj = {
-  random: 'CMA7LB945',
-  jsr1022: 'CP5TDS82Z',
-  mylesandhal: 'GQLJK3P2Q',
-  mylesandhal2: 'GQN1FRJMB',
-  codereview: 'GPKQ6BFPF',
-  news: 'GPU6MKH2B',
-  general: 'CMC3DDGDD',
-  hubot: 'CPXL57BFU'
-};
+//_____________keep track of how many times someone has been thanked
+  var thank_scores;
+  thank_scores = {};
+  robot.hear(/thanks/i, function(res) {
+    var i, id, len, mention, response_text, user_mentions;
+    user_mentions = (function() {
+      var i, len, ref, results;
+      ref = res.message.mentions;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        mention = ref[i];
+        if (mention.type === "user") {
+          results.push(mention);
+        }
+      }
+      return results;
+    })();
+    if (user_mentions.length > 0) {
+      response_text = "";
+      for (i = 0, len = user_mentions.length; i < len; i++) {
+        id = user_mentions[i].id;
+        thank_scores[id] = thank_scores[id] != null ? thank_scores[id] + 1 : 1;
+        response_text += "<@" + id + "> has been thanked " + thank_scores[id] + " times!\n";
+      }
+      return res.send(response_text);
+    }
+  });
 
-//send message to specific channel
+  robot.hear(/badger/i, function(res) {
+    res.send("Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS");
+  });
+
+//listen to what the user wants to cook, steak or pie
+  robot.hear(/let's cook (.*)/i, function(res) {
+    let foodToCook = res.match[1];
+    if(foodToCook === "steak") {
+      return res.send("Medium rare please!");
+    } else if(foodToCook === "pie") {
+      return res.send("Peach cobbler is the best");
+    } else {
+      return res.send("I'm not hungry for that.");
+    }
+  });
+
+//send message to specific channel and tag the sender
   robot.respond(/start a thread in (.*) about (.*)/i, function(res) {
     let inputRoom = res.match[1];
     let outputRoom = jsr1022ChannelsObj[inputRoom];
@@ -79,30 +121,7 @@ let jsr1022ChannelsObj = {
     // return res.send(console.log(res));
   });
 
-/*
-______________  Passive hearing
-*/
-  robot.hear(/badger/i, function(res) {
-    res.send("Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS");
-  });
-
-//listen to what the user wants to cook, steak or pie
-  robot.hear(/let's cook (.*)/i, function(res) {
-    let foodToCook = res.match[1];
-    if(foodToCook === "steak") {
-      return res.send("Medium rare please!");
-    } else if(foodToCook === "pie") {
-      return res.send("Peach cobbler is the best");
-    } else {
-      return res.send("I'm not hungry for that.");
-    }
-  });
-
-
-  /*
-______________  Responses
-  */
-
+//tag the sender and a user of the sender's choice in the current channel
   robot.respond(/summon (.*)/i, function(res) {
     let userName = res.match[1];
     let userId = classObj[userName];
@@ -133,7 +152,7 @@ ______________  Responses
     return res.reply("I'm afraid I can't let you do that.");
   });
 
-
+//hal will perform basic math operations
   robot.respond(/math quiz: (.*) (.*) (.*) (.*)/i, function(res) {
     let operation = res.match[1];
     let num1 = Number(res.match[2]);
@@ -160,42 +179,11 @@ ______________  Responses
     return res.send("The answer is " + sum + ".");
   });
 
-//_____________ Replies (@)
-
 //robot will return the user's email address
   robot.respond(/what is my email/i, function(res) {
   let email = res.envelope.user.email_address;
   return res.reply("Your email address is " + email);
 });
-
-//_____________keep track of how many times someone has been thanked
-
-  var thank_scores;
-  thank_scores = {};
-  robot.hear(/thanks/i, function(res) {
-    var i, id, len, mention, response_text, user_mentions;
-    user_mentions = (function() {
-      var i, len, ref, results;
-      ref = res.message.mentions;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        mention = ref[i];
-        if (mention.type === "user") {
-          results.push(mention);
-        }
-      }
-      return results;
-    })();
-    if (user_mentions.length > 0) {
-      response_text = "";
-      for (i = 0, len = user_mentions.length; i < len; i++) {
-        id = user_mentions[i].id;
-        thank_scores[id] = thank_scores[id] != null ? thank_scores[id] + 1 : 1;
-        response_text += "<@" + id + "> has been thanked " + thank_scores[id] + " times!\n";
-      }
-      return res.send(response_text);
-    }
-  });
 
 // close the module.exports
 };
