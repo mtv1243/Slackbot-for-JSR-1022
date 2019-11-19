@@ -20,8 +20,6 @@ let iceBreakers = [
 ]
 
 let classObj = {
-  greg: "<@UPLA6S8GN>",
-  myles: "<@UP388S9DZ>",
   riley: '<@UPE8R22MA>',
   swapnil: '<@UPKBNHS4D>',
   tamar: '<@UPENDK95E>',
@@ -29,11 +27,15 @@ let classObj = {
   joshua: '<@UNVKDGRQB>',
   jeff: '<@UP388SL67>',
   jose: '<@UP89LS3Q9>',
-  rebecca: '<@UPGUHKFTQ>'
+  rebecca: '<@UPGUHKFTQ>',
+  greg: "<@UPLA6S8GN>",
+  myles: "<@UP388S9DZ>",
 };
 
+
+
 module.exports = function(robot) {
-  /* Basic example of respond / send. If the user enters hi or hello the bot responds "Howdy!" */
+
   var web;
   web = new WebClient(robot.adapter.options.token);
 
@@ -46,6 +48,37 @@ module.exports = function(robot) {
   });
 });
 
+let jsr1022ChannelsObj = {
+  random: 'CMA7LB945',
+  jsr1022: 'CP5TDS82Z',
+  mylesandhal: 'GQLJK3P2Q',
+  mylesandhal2: 'GQN1FRJMB',
+  codereview: 'GPKQ6BFPF',
+  news: 'GPU6MKH2B',
+  general: 'CMC3DDGDD',
+  hubot: 'CPXL57BFU'
+};
+
+//send message to specific channel
+  robot.respond(/start a thread in (.*) about (.*)/i, function(res) {
+    let inputRoom = res.match[1];
+    let outputRoom = jsr1022ChannelsObj[inputRoom];
+    let inputTopic = res.match[2];
+    let outputTopic;
+    let userId = res.envelope.user.id;
+
+    for (outputTopic in classObj) {
+      if (classObj[inputTopic]) {
+        outputTopic = 'for celebrating ' + classObj[inputTopic];
+      } else {
+        outputTopic = 'about ' + inputTopic;
+      }
+    }
+
+    return robot.messageRoom(outputRoom, 'This is a thread ' + outputTopic + ', started by <@' + userId + '>.');
+    // return res.send(console.log(res));
+  });
+
 /*
 ______________  Passive hearing
 */
@@ -53,10 +86,9 @@ ______________  Passive hearing
     res.send("Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS");
   });
 
-//listen to what the user wants to cook
+//listen to what the user wants to cook, steak or pie
   robot.hear(/let's cook (.*)/i, function(res) {
     let foodToCook = res.match[1];
-    console.log(res);
     if(foodToCook === "steak") {
       return res.send("Medium rare please!");
     } else if(foodToCook === "pie") {
@@ -122,7 +154,7 @@ ______________  Responses
         sum = num1 / num2;
         break;
       default:
-        sum = "illogical, Dave."
+        sum = "illogical, Dave.";
     }
 
     return res.send("The answer is " + sum + ".");
@@ -133,13 +165,8 @@ ______________  Responses
 //robot will return the user's email address
   robot.respond(/what is my email/i, function(res) {
   let email = res.envelope.user.email_address;
-  return res.send("Your email address is " + email);
+  return res.reply("Your email address is " + email);
 });
-
-// console.log res in case you need it
-// robot.hear(/email test/i, function(res) {
-// return res.send(console.log(res.envelope.user.email_address));
-// });
 
 //_____________keep track of how many times someone has been thanked
 
