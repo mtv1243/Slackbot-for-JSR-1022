@@ -1,3 +1,33 @@
+# Scripts unique this hubot
+
+### passive listening
+
+type api test to chceck your connection to the Slack API
+
+type thanks <@user> and hubot will post a message citing the number of times tagged user has been thanked in the current channel
+
+type badger and hubot will respond with "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
+
+type let's cook <food> and hubot will repond with "Medium rare please!" if the food is steak, and "Peach cobbler is the best" if the food is pie. Otherwise the response will be "I'm not hungry for that."
+  
+
+### responses to hubot's name
+
+type start a thread in <channel> about <topic>. channel must a channel hubot has been invited to, and it's room id number must be in the jsr1022ChannelsObj variable. Hubot will post in the specified channel: "This is a thread about <topic>, started by <@sender>." If <topic> is a user's first name, hubot will post in the specified channel: "This is a thread for celebreating <@user>, started by <@sender>."
+  
+type summon <user> and hubot will post in the current channel "<@sender> has summoned <@user>. Here is a topic to break the ice:" and then a random ice breaker from the iceBreakers variable. If <user> is not a user's first name, hubot will post "I cannot find anyone with that first name. My mind is going. I can feel it."
+  
+type generate a friend for me, and hubot will post "www.thispersondoesnotexist.com"
+
+type hi or hello, and hubot will respond "Hello Dave."
+
+type open the pod bay doors, and huot will post "I'm afraid I can't let you do that."
+
+type math quiz: <operation> <num1> <word> <num2>, and hubotwill perform basic math operations. Valid input for operation can be add, subtract, multiply, divide. num1 and num2 can be any integer. word is inconsequential.
+  
+type what is my email and hubot will respond with the sender's email address.
+  
+
 # yhubot
 
 yhubot is a chat bot built on the [Hubot][hubot] framework. It was
