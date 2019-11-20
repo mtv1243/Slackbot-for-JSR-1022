@@ -13,7 +13,7 @@ type let's cook < food> and hubot will repond with "Medium rare please!" if the 
 
 ### responses to hubot's name
 
-type start a thread in < channel> about < topic>. channel must a channel hubot has been invited to, and it's room id number must be in the jsr1022ChannelsObj variable. Hubot will post in the specified channel: "This is a thread about < topic>, started by <@sender>." If < topic> is a user's first name, hubot will post in the specified channel: "This is a thread for celebreating <@user>, started by <@sender>."
+type start a thread in < channel> about < topic>. channel must a channel hubot has been invited to, written without dashes or #, and its room id number must be in the jsr1022ChannelsObj variable. Hubot will post in the specified channel: "This is a thread about < topic>, started by <@sender>." If < topic> is a user's first name, hubot will post in the specified channel: "This is a thread for celebreating <@user>, started by <@sender>."
   
 type summon < user> and hubot will post in the current channel "<@sender> has summoned <@user>. Here is a topic to break the ice:" and then a random ice breaker from the iceBreakers variable. If < user> is not a user's first name, hubot will post "I cannot find anyone with that first name. My mind is going. I can feel it."
   
